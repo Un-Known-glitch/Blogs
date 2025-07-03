@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="/style.css">
+
+  <meta charset="UTF-8">
+  <title>MyBlogs</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Georgia, 'Times New Roman', Times, serif;
+      background-color: #f3f3f3;
+      
+     
+    }
+
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #81909e;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px;
+      width: 250px;
+      box-shadow: 0 4px 6px rgb(0, 0, 0);
+    }
+  </style>
+</head>
+<body>
+  
+  
+  <%- include("partials/navbar") %>
+
+  <div class="card-container">
+    <% blogs.forEach(blog => { %>
+      <div class="card">
+        <% if (blog.image) { %>
+        <img
+         src="/uploads/<%= blog.image %>"
+         alt="Blog Image"
+         style =
+         "width: 100%;
+         height: auto;
+         object-fit: cover;
+         border-radius: 5px;
+         margin-bottom: 10px;"
+         />
+         <% } %>
+        <h3><%= blog.title %></h3>
+        <h5><%= blog.subtitle %></h5>
+        <p><%= blog.description.length > 100 ? blog.description.substring(0, 100) + "..." : blog.description %></p>
+      <a href="/single/<%= blog.id %>">Read More</a>
+      </div>
+    <% }) %>
+  </div>
+  <div class="footer">
+  Contact Us: test@gamil.com
+</div>
+
+</body>
+</html>

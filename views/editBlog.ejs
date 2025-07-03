@@ -1,0 +1,74 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Blog</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+     
+    }
+    form {
+      max-width: 400px;
+      margin: auto;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px;
+      margin-top: 12px;
+      background-color: #000000;
+      color: rgb(255, 255, 255);
+      border: none;
+      cursor: pointer;
+    }
+    a{
+      text-decoration: none;
+      padding: 10px;
+      margin-top: 12px;
+      color: rgb(255, 255, 255);
+      border: none;
+      cursor: pointer;
+
+    }
+    .head{
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+      color: rgb(0, 0, 0);
+      display: flex;
+      justify-content: center; /* vertical centering */
+      align-items: center;     /* horizontal centering */      
+      text-align: center;
+      
+      
+     
+    }
+    
+    
+
+  </style>
+</head>
+<body>
+
+  <%- include("partials/navbar") %>
+
+  <h2 class="head">Edit Blog</h2>
+  <form action="/editBlog/<%= blog[0].id %>" method="POST">
+    <input type="text" value="<%= blog[0].title %>" name="title" placeholder="Blog Title" required>
+    <input type="text" value="<%= blog[0].subtitle %>" name="subtitle" placeholder="Subtitle" required>
+    <textarea name="description" placeholder="Write your blog..." required><%= blog[0].description %></textarea>
+    <button type="submit">Submit Blog</button>
+    
+    <button type="menu"><a href="/">Home</a></button>
+     <div class="footer">
+     Contact Us: test@gamil.com
+     </div>
+  
+    
+  </form>
+
+</body>
+</html>
