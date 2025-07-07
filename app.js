@@ -19,11 +19,16 @@ app.use(
   })
 );
 
-// Make user available in all views
 app.use((req, res, next) => {
-  res.locals.currentUser = req.session.user || null;
+  req.user = req.session.user || null;
+  res.locals.currentUser = req.user;
   next();
 });
+// Make user available in all views
+// app.use((req, res, next) => {
+//   res.locals.currentUser = req.session.user || null;
+//   next();
+// });
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -57,7 +62,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', async (req, res) => {
-  const allBlogs = await blogs.findAll();
+  const allBlogs = await blogs.findAll({
+    include: {
+      model:users,
+      attributes: ["Username"],
+    },
+  });
   res.render("blogs", { blogs: allBlogs });
 });
 
@@ -65,13 +75,14 @@ app.get('/add', requireLogin, (req, res) => {
   res.render('add');
 });
 
-app.post('/add', upload.single("image"), async (req, res) => {
+app.post('/add',requireLogin,upload.single("image"), async (req, res) => {
   const { title, subtitle, description } = req.body;
   await blogs.create({
     title,
     subtitle,
     description,
     image: req.file ? req.file.filename : null,
+    userId: req.user.id,
   });
   res.redirect('/');
 });
