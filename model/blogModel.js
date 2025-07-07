@@ -3,7 +3,7 @@ const { blogs } = require(".");
 module.exports=(sequelize,DataTypes)=>{
     const Blog = sequelize.define("blog",{
          userId:{
-            type:DataTypes.STRING,
+            type:DataTypes.INTEGER,
             allowNull:false,
         },
         title:{

@@ -53,7 +53,10 @@
          <% } %>
         <h3><%= blog.title %></h3>
         <h5><%= blog.subtitle %></h5>
-        <p><%= blog.description.length > 100 ? blog.description.substring(0, 100) + "..." : blog.description %></p>
+        <p><%= blog.description.length > 100 ? blog.description.substring(0, 100) + "..." : blog.description %>
+        </p>
+        <p><strong>Auther:</strong> <%= blog.user?.Username || "Unknown" %></p>
+        
       <a href="/single/<%= blog.id %>">Read More</a>
       </div>
     <% }) %>
