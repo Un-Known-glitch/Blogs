@@ -112,6 +112,11 @@
 
   <h2 class="head">Sign in</h2>
   <form action="/signup" method="POST">
+    <% if (error) { %>
+    <div style="color: #ff4c4c; text-align: center; font-weight: bold;">
+    <%= error %>
+    </div>
+    <% } %>
     <input type="text" name="Username" placeholder="Username" required>
     <input type="email" name="Email" placeholder="Email" required>
     <input type="password" name="Password" placeholder="Password" required>

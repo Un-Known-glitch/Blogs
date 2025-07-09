@@ -119,16 +119,22 @@ app.post("/editBlog/:id", async (req, res) => {
 
 // Signup (Login)
 app.get("/signup", (req, res) => {
-  res.render("signup");
+  res.render("signup",{ error: null } );
 });
 
 app.post("/signup", async (req, res) => {
   const { Username, Email, Password } = req.body;
   const user = await users.findOne({ where: { Username } });
 
-  if (!user) return res.send("User not found");
+  // if (!user) return res.send("User not found");
+  if(!user) {
+    return res.render("signup", { error:"User not found..."} );
+  }
   const valid = bcrypt.compareSync(Password, user.Password);
-  if (!valid) return res.send("Invalid Password");
+  // if (!valid) return res.send("Invalid Password");
+  if(!valid) {
+    return res.render("signup", { error:"Invalid Password..."} );
+  }
 
   req.session.user = {
     id: user.id,

@@ -1,3 +1,18 @@
+// module.exports = {
+//  HOST: "${{RAILWAY_PRIVATE_DOMAIN}}",
+//  USER: "root",
+//  PASSWORD:"ZxAGqxDWGfmHcXbmGApTijZZhlFMXaFN",
+//  DB: "railway",
+//  dialect: "mysql",
+//  pool:{
+//     max :5,
+//     min:0,
+//     acquire:30000,
+//     idle:10000,
+
+//  },
+
+// };
 module.exports = {
  HOST: "localhost",
  USER: "root",
