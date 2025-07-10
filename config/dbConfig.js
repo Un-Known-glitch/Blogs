@@ -1,5 +1,5 @@
 module.exports = {
- HOST: "${{RAILWAY_PRIVATE_DOMAIN}}",
+ HOST: "blogs.railway.internal",
  USER: "root",
  PASSWORD:"ZxAGqxDWGfmHcXbmGApTijZZhlFMXaFN",
  DB: "railway",
