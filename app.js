@@ -1,6 +1,5 @@
 const express = require('express');
 const { blogs, users } = require('./model/index');
-const { where } = require('sequelize');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const requireLogin = require("./middleware/middleware");
@@ -8,12 +7,14 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
 
-// Session middleware (only once!)
+// Use port from environment or default to 3000 (for local)
+const PORT = process.env.PORT || 3000;
+
+// Session middleware — use secret from env or fallback
 app.use(
   session({
-    secret: "mySecretKey",
+    secret: process.env.SESSION_SECRET || "mySecretKey",
     resave: false,
     saveUninitialized: false,
   })
@@ -24,11 +25,6 @@ app.use((req, res, next) => {
   res.locals.currentUser = req.user;
   next();
 });
-// Make user available in all views
-// app.use((req, res, next) => {
-//   res.locals.currentUser = req.session.user || null;
-//   next();
-// });
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -42,7 +38,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Multer config
+// Multer config for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads");
@@ -53,6 +49,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Serve uploads folder statically
 app.use("/uploads", express.static("uploads"));
 
 // Middleware
@@ -61,10 +58,11 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+
 app.get('/', async (req, res) => {
   const allBlogs = await blogs.findAll({
     include: {
-      model:users,
+      model: users,
       attributes: ["Username"],
     },
   });
@@ -75,7 +73,7 @@ app.get('/add', requireLogin, (req, res) => {
   res.render('add');
 });
 
-app.post('/add',requireLogin,upload.single("image"), async (req, res) => {
+app.post('/add', requireLogin, upload.single("image"), async (req, res) => {
   const { title, subtitle, description } = req.body;
   await blogs.create({
     title,
@@ -95,19 +93,20 @@ app.get("/single/:id", async (req, res) => {
   res.render("singleBlog", { blog });
 });
 
-app.get("/delete/:id", (req, res) => {
+// Protect delete route with requireLogin middleware for security
+app.get("/delete/:id", requireLogin, async (req, res) => {
   const id = req.params.id;
-  blogs.destroy({ where: { id } });
+  await blogs.destroy({ where: { id } });
   res.redirect("/");
 });
 
-app.get("/edit/:id", async (req, res) => {
+app.get("/edit/:id", requireLogin, async (req, res) => {
   const id = req.params.id;
   const blog = await blogs.findAll({ where: { id } });
   res.render("editBlog", { blog });
 });
 
-app.post("/editBlog/:id", async (req, res) => {
+app.post("/editBlog/:id", requireLogin, async (req, res) => {
   const id = req.params.id;
   const { title, subtitle, description, image } = req.body;
   await blogs.update(
@@ -119,21 +118,19 @@ app.post("/editBlog/:id", async (req, res) => {
 
 // Signup (Login)
 app.get("/signup", (req, res) => {
-  res.render("signup",{ error: null } );
+  res.render("signup", { error: null });
 });
 
 app.post("/signup", async (req, res) => {
   const { Username, Email, Password } = req.body;
   const user = await users.findOne({ where: { Username } });
 
-  // if (!user) return res.send("User not found");
-  if(!user) {
-    return res.render("signup", { error:"User not found..."} );
+  if (!user) {
+    return res.render("signup", { error: "User not found..." });
   }
   const valid = bcrypt.compareSync(Password, user.Password);
-  // if (!valid) return res.send("Invalid Password");
-  if(!valid) {
-    return res.render("signup", { error:"Invalid Password..."} );
+  if (!valid) {
+    return res.render("signup", { error: "Invalid Password..." });
   }
 
   req.session.user = {
@@ -160,7 +157,7 @@ app.post("/register", async (req, res) => {
   res.redirect('/signup');
 });
 
-// Start the server
+// Start the server and listen on the correct port
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
