@@ -142,11 +142,23 @@ app.post("/signup", async (req, res) => {
 
 // Register
 app.get("/register", (req, res) => {
-  res.render("register");
+  res.render("register", { error: null });
 });
 
 app.post("/register", async (req, res) => {
   const { Username, Email, Password } = req.body;
+
+  // Restrict certain usernames
+  const forbiddenUsernames = ["admin", "host", "dev"];
+  if (forbiddenUsernames.includes(Username.toLowerCase())) {
+    return res.render("register", { error: "This username is not allowed. Please choose another." });
+  }
+
+  // Check if username already exists
+  const existingUser = await users.findOne({ where: { Username } });
+  if (existingUser) {
+    return res.render("register", { error: "Username already taken." });
+  }
 
   await users.create({
     Username,
