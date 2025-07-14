@@ -168,6 +168,7 @@ app.post("/signup", async (req, res) => {
     req.session.user = {
       id: user.id,
       Username: user.Username,
+      isAdmin: user.isAdmin, // add this line
     };
     res.redirect("/");
   } catch (err) {
@@ -175,6 +176,30 @@ app.post("/signup", async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// app.post("/signup", async (req, res) => {
+//   try {
+//     const { Username, Email, Password } = req.body;
+//     const user = await users.findOne({ where: { Username } });
+
+//     if (!user) {
+//       return res.render("signup", { error: "User not found..." });
+//     }
+//     const valid = bcrypt.compareSync(Password, user.Password);
+//     if (!valid) {
+//       return res.render("signup", { error: "Invalid Password..." });
+//     }
+
+//     req.session.user = {
+//       id: user.id,
+//       Username: user.Username,
+//     };
+//     res.redirect("/");
+//   } catch (err) {
+//     console.error("Login error:", err);
+//     res.status(500).send("Server error");
+//   }
+// });
 
 // Register with username rules
 app.get("/register", (req, res) => {
