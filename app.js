@@ -7,11 +7,8 @@ const multer = require("multer");
 const path = require("path");
 
 const app = express();
-
-// Use port from environment or default to 3000 (for local)
 const PORT = process.env.PORT || 3000;
 
-// Session middleware — use secret from env or fallback
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "mySecretKey",
@@ -26,7 +23,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Logout route
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -38,7 +34,6 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Multer config for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads");
@@ -49,10 +44,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Serve uploads folder statically
 app.use("/uploads", express.static("uploads"));
-
-// Middleware
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -87,26 +79,37 @@ app.post('/add', requireLogin, upload.single("image"), async (req, res) => {
 
 app.get("/single/:id", async (req, res) => {
   const id = req.params.id;
-  const blog = await blogs.findAll({
-    where: { id },
-  });
+  const blog = await blogs.findAll({ where: { id } });
   res.render("singleBlog", { blog });
 });
 
-// Protect delete route with requireLogin middleware for security
+// Restrict delete to admin only
 app.get("/delete/:id", requireLogin, async (req, res) => {
+  if (req.user.Username !== "admin") {
+    return res.status(403).send("Only admin can delete blogs.");
+  }
+
   const id = req.params.id;
   await blogs.destroy({ where: { id } });
   res.redirect("/");
 });
 
+// Restrict edit to admin only
 app.get("/edit/:id", requireLogin, async (req, res) => {
+  if (req.user.Username !== "admin") {
+    return res.status(403).send("Only admin can edit blogs.");
+  }
+
   const id = req.params.id;
   const blog = await blogs.findAll({ where: { id } });
   res.render("editBlog", { blog });
 });
 
 app.post("/editBlog/:id", requireLogin, async (req, res) => {
+  if (req.user.Username !== "admin") {
+    return res.status(403).send("Only admin can update blogs.");
+  }
+
   const id = req.params.id;
   const { title, subtitle, description, image } = req.body;
   await blogs.update(
@@ -140,7 +143,7 @@ app.post("/signup", async (req, res) => {
   res.redirect("/");
 });
 
-// Register
+// Register with username rules
 app.get("/register", (req, res) => {
   res.render("register", { error: null });
 });
@@ -148,13 +151,15 @@ app.get("/register", (req, res) => {
 app.post("/register", async (req, res) => {
   const { Username, Email, Password } = req.body;
 
-  // Restrict certain usernames
+  // Block specific usernames
   const forbiddenUsernames = ["admin", "host", "dev"];
   if (forbiddenUsernames.includes(Username.toLowerCase())) {
-    return res.render("register", { error: "This username is not allowed. Please choose another." });
+    return res.render("register", {
+      error: "This username is not allowed. Please choose another.",
+    });
   }
 
-  // Check if username already exists
+  // Prevent duplicates
   const existingUser = await users.findOne({ where: { Username } });
   if (existingUser) {
     return res.render("register", { error: "Username already taken." });
@@ -169,7 +174,6 @@ app.post("/register", async (req, res) => {
   res.redirect('/signup');
 });
 
-// Start the server and listen on the correct port
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
