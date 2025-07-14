@@ -211,12 +211,12 @@ app.post("/register", async (req, res) => {
     const { Username, Email, Password } = req.body;
 
     // Block specific usernames
-    const forbiddenUsernames = ["admin", "host", "dev"];
-    if (forbiddenUsernames.includes(Username.toLowerCase())) {
-      return res.render("register", {
-        error: "This username is not allowed. Please choose another.",
-      });
-    }
+    // // const forbiddenUsernames = ["admin", "host", "dev"];
+    // if (forbiddenUsernames.includes(Username.toLowerCase())) {
+    //   return res.render("register", {
+    //     error: "This username is not allowed. Please choose another.",
+    //   });
+    // }
 
     // Prevent duplicates
     const existingUser = await users.findOne({ where: { Username } });
