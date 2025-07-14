@@ -1,10 +1,20 @@
- // middleware/middleware.js
+// middleware/authMiddleware.js
 
- function requireLogin(req, res, next){
-    if(!req.session.user) {
-        return res.redirect("/signup");
-    }
-    next();
+function requireLogin(req, res, next) {
+  if (!req.session.user) {
+    return res.redirect("/signup");
+  }
+  next();
 }
 
-module.exports = requireLogin;
+function requireAdmin(req, res, next) {
+  if (!req.session.user || req.session.user.Username.toLowerCase() !== "admin") {
+    return res.status(403).send("Only admin can perform this action.");
+  }
+  next();
+}
+
+module.exports = {
+  requireLogin,
+  requireAdmin,
+};
