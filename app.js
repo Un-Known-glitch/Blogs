@@ -2,7 +2,7 @@ const express = require('express');
 const { blogs, users } = require('./model/index');
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
-const { requireLogin, requireAdmin } = require("./middleware/authMiddleware");
+const { requireLogin, requireAdmin } = require("./middleware/authmiddleware");
 const multer = require("multer");
 const path = require("path");
 
