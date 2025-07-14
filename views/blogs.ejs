@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="/style.css">
-
   <meta charset="UTF-8">
   <title>MyBlogs</title>
   <style>
@@ -10,8 +9,6 @@
       margin: 0;
       font-family: Georgia, 'Times New Roman', Times, serif;
       background-color: #f3f3f3;
-      
-     
     }
 
     .card-container {
@@ -29,41 +26,68 @@
       width: 250px;
       box-shadow: 0 4px 6px rgb(0, 0, 0);
     }
+
+    .card-actions {
+      margin-top: 10px;
+    }
+
+    .card-actions a {
+      display: inline-block;
+      margin-right: 8px;
+      text-decoration: none;
+      color: white;
+      background-color: #333;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .card-actions a:hover {
+      background-color: #555;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding: 10px;
+      background-color: #ccc;
+    }
   </style>
 </head>
 <body>
-  
-  
+
   <%- include("partials/navbar") %>
 
   <div class="card-container">
     <% blogs.forEach(blog => { %>
       <div class="card">
         <% if (blog.image) { %>
-        <img
-         src="/uploads/<%= blog.image %>"
-         alt="Blog Image"
-         style =
-         "width: 100%;
-         height: auto;
-         object-fit: cover;
-         border-radius: 5px;
-         margin-bottom: 10px;"
-         />
-         <% } %>
+          <img
+            src="/uploads/<%= blog.image %>"
+            alt="Blog Image"
+            style="width: 100%; height: auto; object-fit: cover; border-radius: 5px; margin-bottom: 10px;"
+          />
+        <% } %>
+
         <h3><%= blog.title %></h3>
         <h5><%= blog.subtitle %></h5>
-        <p><%= blog.description.length > 100 ? blog.description.substring(0, 100) + "..." : blog.description %>
-        </p>
-        <p><strong>Auther:</strong> <%= blog.user?.Username || "Unknown" %></p>
-        
-      <a href="/single/<%= blog.id %>">Read More</a>
+        <p><%= blog.description.length > 100 ? blog.description.substring(0, 100) + "..." : blog.description %></p>
+        <p><strong>Author:</strong> <%= blog.user?.Username || "Unknown" %></p>
+
+        <div class="card-actions">
+          <a href="/single/<%= blog.id %>">Read More</a>
+
+          <% if (currentUser && currentUser.Username === 'Admin') { %>
+            <a href="/edit/<%= blog.id %>">Edit</a>
+            <a href="/delete/<%= blog.id %>">Delete</a>
+          <% } %>
+        </div>
       </div>
     <% }) %>
   </div>
+
   <div class="footer">
-  Contact Us: test@gamil.com
-</div>
+    Contact Us: test@gamil.com
+  </div>
 
 </body>
 </html>
