@@ -167,8 +167,7 @@ app.post("/signup", async (req, res) => {
 
     req.session.user = {
       id: user.id,
-      Username: user.Username,
-      isAdmin: user.isAdmin, // add this line
+      Username: user.Username
     };
     res.redirect("/");
   } catch (err) {
