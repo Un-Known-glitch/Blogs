@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title><%= blog[0].title %></title>
+  <title><%= blog.title %></title>
   <link rel="stylesheet" href="/style.css">
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
       background: linear-gradient(to right, #f8f9fa, #e0e0e0);
       margin: 0;
-      /* display: flex; */
       justify-content: center;
       align-items: center;
       min-height: 100vh;
@@ -70,25 +69,27 @@
 <body>
 
   <%- include("partials/navbar") %>
-  <div class="blog-container">
-     <% if (blog[0].image) { %>
-        <img
-         src="/uploads/<%= blog[0].image %>"
-         alt="Blog Image"
-         style =
-         "width: 100%;
-         height: auto;
-         object-fit:cover;
-         border-radius: 5px;
-         margin-bottom: 10px;"
-         />
-         <% } %>
-    <div class="blog-title"><%= blog[0].title %></div>
-    <div class="blog-subtitle"><%= blog[0].subtitle %></div>
-    <div class="blog-description"><%= blog[0].description %></div>
 
-    <a class="btn delete-btn" href="/delete/<%- blog[0].id %>">🗑️ Delete</a>
-    <a class="btn delete-btn" href="/edit/<%- blog[0].id %>">✔ Edit</a>
+  <div class="blog-container">
+    <% if (blog.image) { %>
+      <img
+        src="/uploads/<%= blog.image %>"
+        alt="Blog Image"
+        style="
+          width: 100%;
+          height: auto;
+          object-fit: cover;
+          border-radius: 5px;
+          margin-bottom: 10px;"
+      />
+    <% } %>
+
+    <div class="blog-title"><%= blog.title %></div>
+    <div class="blog-subtitle"><%= blog.subtitle %></div>
+    <div class="blog-description"><%= blog.description %></div>
+
+    <a class="btn delete-btn" href="/delete/<%= blog.id %>">🗑️ Delete</a>
+    <a class="btn delete-btn" href="/edit/<%= blog.id %>">✔ Edit</a>
     <a class="btn" href="/">← Back to Blogs</a>
   </div>
 
