@@ -31,7 +31,7 @@ db.users = require("./usersModel.js")(sequelize, DataTypes);
 db.blogs.belongsTo(db.users, { foreignKey: "userId" });
 db.users.hasMany(db.blogs, { foreignKey: "userId" });
 
-db.sequelize.sync({ force:true }).then(() => {
+db.sequelize.sync({ force:false }).then(() => {
   console.log("Database synchronized");
 });
 
